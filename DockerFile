@@ -1,0 +1,33 @@
+From ubuntu:18.04
+
+#暴露22端口
+EXPOSE	22
+
+#安装ssh
+RUN 	apt-get update \
+	&& apt-get install -y openssh-server curl git subversion ctags locales net-tools \
+	&& apt-get install -y gcc g++ clang python python3 make build-essential cmake python3-dev python-dev \
+	&& apt-get install -y software-properties-common vim \
+	&& apt-get autoremove \
+	&& mkdir -p /var/run/sshd \
+	&& sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
+	&& echo 'root:@^#EMA' |chpasswd 
+
+#系统时间
+WORKDIR /root/
+ENV 	TZ=Asia/Shanghai
+RUN 	ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+#安装vim
+ADD	./vim-config/.vimrc 	/root/.vimrc
+ADD	./vim-config/.vim	/root/.vim
+RUN	mkdir -p /root/.vim/bundle && cd /root/.vim/bundle && git clone https://github.com/VundleVim/Vundle.vim.git \
+	&& git clone https://github.com/Valloric/YouCompleteMe.git && cd YouCompleteMe && git submodule update --init --recursive \
+	&& YCM_CORES=1 ./install.py --clang-completer --ts-completer\
+	&& rm -f /tmp/* \
+	&& vim -c 'PluginInstall' -c 'qa!'
+
+#启动命令
+COPY	start.sh /bin/start.sh
+ENTRYPOINT	["/bin/start.sh"]
+
