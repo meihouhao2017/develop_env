@@ -1,9 +1,5 @@
 From ubuntu:18.04
 
-#暴露22端口
-EXPOSE	22
-
-#安装ssh
 RUN 	apt-get update \
 	&& apt-get install -y curl git subversion ctags locales net-tools \
 	&& apt-get install -y gcc g++ clang python python3 make build-essential cmake python3-dev python-dev node npm\
