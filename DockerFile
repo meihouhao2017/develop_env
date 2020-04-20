@@ -5,13 +5,10 @@ EXPOSE	22
 
 #安装ssh
 RUN 	apt-get update \
-	&& apt-get install -y openssh-server curl git subversion ctags locales net-tools \
-	&& apt-get install -y gcc g++ clang python python3 make build-essential cmake python3-dev python-dev \
+	&& apt-get install -y curl git subversion ctags locales net-tools \
+	&& apt-get install -y gcc g++ clang python python3 make build-essential cmake python3-dev python-dev node npm\
 	&& apt-get install -y software-properties-common vim \
-	&& apt-get autoremove \
-	&& mkdir -p /var/run/sshd \
-	&& sed -i 's/PermitRootLogin prohibit-password/PermitRootLogin yes/' /etc/ssh/sshd_config \
-	&& echo 'root:@^#EMA' |chpasswd 
+	&& apt-get autoremove 
 
 #系统时间
 WORKDIR /root/
